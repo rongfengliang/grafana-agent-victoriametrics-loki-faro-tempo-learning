@@ -1,6 +1,7 @@
-# gragana agent with victoriametrics learning
+# grafana-agent-victoriametrics-loki-faro-tempo-learning
 
 
+> test grafana faro with metric+log+agent
 
 ## dashboard 
 

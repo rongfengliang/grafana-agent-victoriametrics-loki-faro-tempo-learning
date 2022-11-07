@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index page</title>
+</head>
+
+<body>
+    <input  type="button" value="demoapp"  onclick="demo()"/>
+    <script >
+        function demo(){
+            alert("demoapp")
+        }
+    </script>
+    <script type="module">
+        import { TracingInstrumentation } from '@grafana/faro-web-tracing';
+        import { initializeFaro, getWebInstrumentations } from '@grafana/faro-web-sdk';
+
+        const faro = initializeFaro({
+            url: 'http://localhost:12347/collect',
+            apiKey: 'dalongdemo',
+            instrumentations: [...getWebInstrumentations(), new TracingInstrumentation()],
+            app: {
+                name: 'frontend',
+                version: '1.0.0',
+            },
+        });
+
+        // get OTEL trace and context APIs
+        const { trace, context } = faro.api.getOTEL();
+
+        const tracer = trace.getTracer('default');
+        const span = tracer.startSpan('click');
+        context.with(trace.setSpan(context.active(), span), () => {
+            demoapp()
+            span.end();
+        });
+        console.log("demoapp")
+    </script>
+
+</body>
+
+</html>

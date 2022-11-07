@@ -1,0 +1,9 @@
+agent-data
+db_data
+promdata
+victoriametrics
+logs
+tempo-data
+node_modules
+.parcel-cache
+dist

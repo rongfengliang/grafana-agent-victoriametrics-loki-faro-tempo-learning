@@ -1,0 +1,17 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "parcel": "^2.7.0",
+    "process": "^0.11.10"
+  },
+  "scripts": {
+    "app": "parcel index.html"
+  },
+  "dependencies": {
+    "@grafana/faro-web-sdk": "^1.0.0-beta2",
+    "@grafana/faro-web-tracing": "^1.0.0-beta2"
+  }
+}

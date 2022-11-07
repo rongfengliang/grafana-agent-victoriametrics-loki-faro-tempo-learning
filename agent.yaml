@@ -1,0 +1,78 @@
+server:
+  log_level: debug
+
+traces:
+  configs:
+  - name: default
+    service_graphs:
+      enabled: true
+    receivers:
+      jaeger:
+        protocols:
+          thrift_http:
+    remote_write:
+      - endpoint: tempo:4317
+        insecure: true
+    batch:
+      timeout: 5s
+      send_batch_size: 100
+logs:
+  configs:
+  - name: default
+    positions:
+      filename: /tmp/positions.yaml
+    scrape_configs:
+      - job_name: varlogs
+        static_configs:
+          - targets: [localhost]
+            labels:
+              job: varlogs
+              __path__: /var/log/*log
+    clients:
+      - url: http://loki:3100/loki/api/v1/push
+
+metrics:
+  global:
+    scrape_interval: 10s
+    remote_write:
+    - url: http://victoriametrics:8428/api/v1/write
+  configs:
+  - name: default
+    scrape_configs:
+    - job_name: avalanche
+      static_configs:
+      - targets: ['${AVALANCHE_HOST:-localhost:9001}']
+
+integrations:
+  app_agent_receiver:
+    autoscrape:
+      enable: true
+      metrics_instance: default
+    instance: mydemoappagent
+    logs_instance: default
+    logs_labels:
+      app: mydemoappagent_client
+      kind: ''
+    logs_send_timeout: '5s'
+    server:
+      api_key: dalongdemo
+      cors_allowed_origins:
+        - '*'
+      host: '0.0.0.0'
+      max_allowed_payload_size: 5e+07
+      rate_limiting:
+        burstiness: 100
+        enabled: true
+        rps: 100
+    sourcemaps:
+      download: true
+    traces_instance: default
+  node_exporter: {}
+  process:
+    process_names:
+      - name: "{{.Comm}}"
+        cmdline:
+        - '.+'
+  postgres_configs:
+  - data_source_names:
+    - postgresql://postgres:postgrespassword@postgres:5432/postgres?sslmode=disable
